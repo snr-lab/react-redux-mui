@@ -1,9 +1,11 @@
-import React from 'react';
+import React, { useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { makeStyles } from '@material-ui/core/styles';
-import { Avatar, Container, CssBaseline, List, ListItem, Paper, Typography } from '@material-ui/core';
+import { Avatar, Box, CssBaseline, LinearProgress, List, ListItem, Paper, Typography } from '@material-ui/core';
 import { ListAlt } from '@material-ui/icons';
 import TaskForm from '../../components/TaskForm';
 import TaskItem from '../../components/TaskItem';
+import { getTodos } from '../../redux/todosSlice';
 
 const useStyles = makeStyles((theme) => ({
     paper: {
@@ -11,6 +13,9 @@ const useStyles = makeStyles((theme) => ({
       display: 'flex',
       flexDirection: 'column',
       alignItems: 'center',
+    },
+    progressBar: {
+      minHeight: 4
     },
     avatar: {
       margin: theme.spacing(1),
@@ -21,6 +26,7 @@ const useStyles = makeStyles((theme) => ({
       padding: 0,
       display: 'flex',
       width: 400,
+      minHeight: 60
     },
     list: {
       width: "100%"
@@ -30,13 +36,25 @@ const useStyles = makeStyles((theme) => ({
     }
 }));
 
-const Login: React.FC = () => {
-    const classes = useStyles();
+export interface TodoProp {
+  id: string
+  task: string
+  done: boolean
+}
 
+const Login: React.FC = () => {
+  const classes = useStyles();
+  const dispatch = useDispatch();
+  const loading = useSelector((state: any) => state.Todos.loading);
+  const todoList = useSelector((state: any) => state.Todos.todoList);
+  useEffect(() => {
+    dispatch(getTodos());
+  }, [dispatch]);
   return (
-    <Container component="main" maxWidth="xs">
+    <Box component="main">
       <CssBaseline />
-      <div className={classes.paper}>
+      <Box className={classes.progressBar}>{loading && <LinearProgress />}</Box>
+      <Box className={classes.paper} maxWidth="xs">
         <Avatar className={classes.avatar}>
           <ListAlt />
         </Avatar>
@@ -46,17 +64,17 @@ const Login: React.FC = () => {
         <TaskForm />
         <Paper className={classes.listRoot}>
           <List className={classes.list}>
-            {[0, 1, 2, 3].map((value) => {
+            {todoList.map((todo: TodoProp) => {
               return (
-                <ListItem className={classes.listItem} key={value} role={undefined}>
-                  <TaskItem />
+                <ListItem className={classes.listItem} key={todo.id} role={undefined}>
+                  <TaskItem task={todo.task} id={todo.id} done={todo.done} />
                 </ListItem>
               );
             })}
           </List>
         </Paper>
-      </div>
-    </Container>
+      </Box>
+    </Box>
   );
 }
 

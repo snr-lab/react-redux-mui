@@ -1,6 +1,6 @@
 import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
-import { Avatar, Container, CssBaseline, Typography } from '@material-ui/core';
+import { Avatar, Box, CssBaseline, Typography } from '@material-ui/core';
 import { Info } from '@material-ui/icons';
 
 const useStyles = makeStyles((theme) => ({
@@ -21,20 +21,19 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const Login: React.FC = () => {
-    const classes = useStyles();
-
+  const classes = useStyles();
   return (
-    <Container component="main" maxWidth="xs">
+    <Box component="main">
       <CssBaseline />
-      <div className={classes.paper}>
+      <Box className={classes.paper} maxWidth="xs">
         <Avatar className={classes.avatar}>
           <Info />
         </Avatar>
         <Typography component="h1" variant="h5">
           Info
         </Typography>
-      </div>
-    </Container>
+      </Box>
+    </Box>
   );
 }
 

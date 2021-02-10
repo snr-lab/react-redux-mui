@@ -1,7 +1,11 @@
 import React, { useState } from 'react';
+import { useDispatch } from 'react-redux';
 import { makeStyles } from '@material-ui/core/styles';
 import { Box, Checkbox, IconButton, InputBase, Paper} from '@material-ui/core';
 import { Close } from '@material-ui/icons';
+import { TodoProp } from '../pages/Todo';
+import { deleteTodo } from '../redux/todosSlice';
+import { updateTodo } from '../redux/todosSlice';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -20,29 +24,32 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
-const Login: React.FC = () => {
+const Login: React.FC<TodoProp> = (props) => {
+  const { task, id, done } = props;
   const classes = useStyles();
+  const dispatch = useDispatch();
   const [hover, setHover] = useState(false);
-  const [checked, setChecked] = useState(false);
-
+  const [taskDone, setTaskDone] = useState(done);
+  const [taskTxt, setTaskTxt] = useState(task);
   const handleToggle = () => {
-    setChecked((previousValue: boolean) => {
+    setTaskDone((previousValue: boolean) => {
+      // @ts-ignore
+      dispatch(updateTodo({id, task: taskTxt, done: !previousValue}));
       return !previousValue;
     });
   }
-
   const handleDelete = () => {
-    console.log("Delete item");
+    // @ts-ignore
+    dispatch(deleteTodo(id));
   }
-
   const updateItem = () => {
-    console.log("Update Item");
+    // @ts-ignore
+    dispatch(updateTodo({id, task: taskTxt, done: taskDone}));
   }
-
   return (
       <Box className={classes.root} onMouseEnter={() => setHover(true)} onMouseLeave={() => setHover(false)}>
         <Checkbox 
-          checked={checked}
+          checked={taskDone}
           tabIndex={-1}
           disableRipple
           inputProps={{ 'aria-labelledby': "id" }}
@@ -50,7 +57,8 @@ const Login: React.FC = () => {
         />
         <InputBase
           className={classes.input}
-          placeholder="Add todo"
+          value = {taskTxt}
+          onChange = {e => setTaskTxt(e.target.value)}
           inputProps={{ 'aria-label': 'Add todo' }}
           onBlur={updateItem}
         />
