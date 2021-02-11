@@ -21,7 +21,7 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
-const Login: React.FC = () => {
+const TaskForm: React.FC = () => {
   const classes = useStyles();
   const dispatch = useDispatch();
   const [task, setTask] = useState("");
@@ -49,4 +49,4 @@ const Login: React.FC = () => {
   );
 }
 
-export default Login;
+export default TaskForm;

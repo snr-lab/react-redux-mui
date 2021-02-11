@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { makeStyles } from '@material-ui/core/styles';
-import { Box, Checkbox, IconButton, InputBase, Paper} from '@material-ui/core';
+import { Box, Checkbox, IconButton, InputBase } from '@material-ui/core';
 import { Close } from '@material-ui/icons';
 import { TodoProp } from '../pages/Todo';
 import { deleteTodo } from '../redux/todosSlice';
@@ -24,7 +24,7 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
-const Login: React.FC<TodoProp> = (props) => {
+const TaskItem: React.FC<TodoProp> = (props) => {
   const { task, id, done } = props;
   const classes = useStyles();
   const dispatch = useDispatch();
@@ -69,4 +69,4 @@ const Login: React.FC<TodoProp> = (props) => {
   );
 }
 
-export default Login;
+export default TaskItem;

@@ -1,7 +1,7 @@
 import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import { Avatar, Box, CssBaseline, Typography } from '@material-ui/core';
-import { Info } from '@material-ui/icons';
+import { Info as InfoIcon } from '@material-ui/icons';
 
 const useStyles = makeStyles((theme) => ({
     paper: {
@@ -20,14 +20,14 @@ const useStyles = makeStyles((theme) => ({
     }
 }));
 
-const Login: React.FC = () => {
+const Info: React.FC = () => {
   const classes = useStyles();
   return (
     <Box component="main">
       <CssBaseline />
       <Box className={classes.paper} maxWidth="xs">
         <Avatar className={classes.avatar}>
-          <Info />
+          <InfoIcon />
         </Avatar>
         <Typography component="h1" variant="h5">
           Info
@@ -37,4 +37,4 @@ const Login: React.FC = () => {
   );
 }
 
-export default Login;
+export default Info;

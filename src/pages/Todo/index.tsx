@@ -37,12 +37,12 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export interface TodoProp {
-  id: string
+  id: number
   task: string
   done: boolean
 }
 
-const Login: React.FC = () => {
+const Todo: React.FC = () => {
   const classes = useStyles();
   const dispatch = useDispatch();
   const loading = useSelector((state: any) => state.Todos.loading);
@@ -78,4 +78,4 @@ const Login: React.FC = () => {
   );
 }
 
-export default Login;
+export default Todo;
