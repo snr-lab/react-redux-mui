@@ -1,11 +1,16 @@
 # React app with Redux and MUI
 
-This project was build with React Redux and MUI
+This is a demo project for simple Todo List. It was build with React Redux and MUI.
 
-### `npm start`
+Start the UI server on localhost, port 3000.
 
-Runs the app in the development mode on port 3000.
+```sh
+npm start
+```
 
-### `npm run start-api`
+Start the API server on localhost, port 3001.
 
-Runs the REST API on port 3001.
+```sh
+npm run start-api
+```
+
