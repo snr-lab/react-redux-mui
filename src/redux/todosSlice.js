@@ -1,4 +1,4 @@
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
+import { createSlice, createAsyncThunk, isAnyOf } from '@reduxjs/toolkit';
 import { getTodos as getTodosApi } from './../lib/api-calls';
 import { addTodo as addTodoApi } from './../lib/api-calls';
 import { deleteTodo as deleteTodoApi } from './../lib/api-calls';
@@ -61,70 +61,36 @@ const todosSlice = createSlice({
             }
         }
     },
-    extraReducers: {
-        [getTodos.pending]: (state, action) => {
-            state.loading = true;
-            state.errorMsg = "";
-        },
-        [getTodos.fulfilled]: (state, action) => {
+    extraReducers: (builder) => {
+        builder.addCase(getTodos.fulfilled, (state, action) => {
             state.todoList = action.payload;
-            state.loading = false;
-            state.errorMsg = "";
-        },
-        [getTodos.rejected]: (state, action) => {
-            state.errorMsg = action.error.message;
-            state.loading = false;
-        },
-        [addTodo.pending]: (state, action) => {
-            state.loading = true;
-            state.errorMsg = "";
-        },
-        [addTodo.fulfilled]: (state, action) => {
+        }).addCase(addTodo.fulfilled, (state, action) => {
             state.todoList.push(action.payload);
-            state.loading = false;
-            state.errorMsg = "";
-        },
-        [addTodo.rejected]: (state, action) => {
-            state.errorMsg = action.error.message;
-            state.loading = false;
-        },
-        [deleteTodo.pending]: (state, action) => {
-            state.loading = true;
-            state.errorMsg = "";
-        },
-        [deleteTodo.fulfilled]: (state, action) => {
+        }).addCase(deleteTodo.fulfilled, (state, action) => {
             state.todoList = state.todoList.filter((todo)=>{
                 if(todo.id === action.payload){
                     return false;
                 }
                 return true;
             });
-            state.loading = false;
-            state.errorMsg = "";
-        },
-        [deleteTodo.rejected]: (state, action) => {
-            state.errorMsg = action.error.message;
-            state.loading = false;
-        },
-        [updateTodo.pending]: (state, action) => {
-            state.loading = true;
-            state.errorMsg = "";
-        },
-        [updateTodo.fulfilled]: (state, action) => {
+        }).addCase(updateTodo.fulfilled, (state, action) => {
             state.todoList = state.todoList.map((todo)=>{
                 if(todo.id === action.payload.id){
                     return action.payload;
                 }
                 return todo;
             });
+        }).addMatcher(isAnyOf(getTodos.pending, addTodo.pending, deleteTodo.pending, updateTodo.pending), (state, action) => {
+            state.loading = true;
+            state.errorMsg = "";
+        }).addMatcher(isAnyOf(getTodos.fulfilled, addTodo.fulfilled, deleteTodo.fulfilled, updateTodo.fulfilled), (state, action) => {
             state.loading = false;
             state.errorMsg = "";
-        },
-        [updateTodo.rejected]: (state, action) => {
-            state.errorMsg = action.error.message;
+        }).addMatcher(isAnyOf(getTodos.rejected, addTodo.rejected, deleteTodo.rejected, updateTodo.rejected), (state, action) => {
             state.loading = false;
-        }
-    }
+            state.errorMsg = action.error.message || "API Error";
+        });
+      }
 });
 export const { testAction } = todosSlice.actions;
 export default todosSlice.reducer;

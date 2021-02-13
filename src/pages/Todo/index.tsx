@@ -2,6 +2,7 @@ import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { makeStyles } from '@material-ui/core/styles';
 import { Avatar, Box, CssBaseline, LinearProgress, List, ListItem, Paper, Typography } from '@material-ui/core';
+import { Alert } from '@material-ui/lab';
 import { ListAlt } from '@material-ui/icons';
 import TaskForm from '../../components/TaskForm';
 import TaskItem from '../../components/TaskItem';
@@ -21,6 +22,10 @@ const useStyles = makeStyles((theme) => ({
       margin: theme.spacing(1),
       backgroundColor: theme.palette.secondary.main,
     },
+    errorMsg: {
+      width: 400,
+      marginBottom: theme.spacing(1)
+    },
     listRoot: {
       marginTop: theme.spacing(1),
       padding: 0,
@@ -29,7 +34,7 @@ const useStyles = makeStyles((theme) => ({
       minHeight: 60
     },
     list: {
-      width: "100%"
+      width: '100%'
     },
     listItem: {
       padding: 0
@@ -46,6 +51,7 @@ const Todo: React.FC = () => {
   const classes = useStyles();
   const dispatch = useDispatch();
   const loading = useSelector((state: any) => state.Todos.loading);
+  const errorMsg = useSelector((state: any) => state.Todos.errorMsg);
   const todoList = useSelector((state: any) => state.Todos.todoList);
   useEffect(() => {
     dispatch(getTodos());
@@ -61,6 +67,7 @@ const Todo: React.FC = () => {
         <Typography component="h1" variant="h5">
           Todo List
         </Typography>
+        {errorMsg && <Alert severity="error" className={classes.errorMsg}>{errorMsg}</Alert>}
         <TaskForm />
         <Paper className={classes.listRoot}>
           <List className={classes.list}>
