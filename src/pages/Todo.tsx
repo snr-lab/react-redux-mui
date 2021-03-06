@@ -4,9 +4,9 @@ import { makeStyles } from '@material-ui/core/styles';
 import { Avatar, Box, CssBaseline, LinearProgress, List, ListItem, Paper, Typography } from '@material-ui/core';
 import { Alert } from '@material-ui/lab';
 import { ListAlt } from '@material-ui/icons';
-import TaskForm from '../../components/TaskForm';
-import TaskItem from '../../components/TaskItem';
-import { getTodos } from '../../redux/todosSlice';
+import TaskForm from '../components/TaskForm';
+import TaskItem from '../components/TaskItem';
+import { getTodos } from '../redux/todosSlice';
 
 const useStyles = makeStyles((theme) => ({
     paper: {
