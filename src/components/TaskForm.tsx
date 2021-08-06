@@ -4,6 +4,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import { IconButton, InputBase, Paper} from '@material-ui/core';
 import { Add } from '@material-ui/icons';
 import { addTodo } from '../redux/todosSlice';
+import { useAppToast } from '../context-providers/Toast';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -23,13 +24,26 @@ const useStyles = makeStyles((theme) => ({
 
 const TaskForm: React.FC = () => {
   const classes = useStyles();
+  const [showToast] = useAppToast();
   const dispatch = useDispatch();
   const [task, setTask] = useState("");
   const addNewTodo = (event: React.ChangeEvent<{}>) => {
     event.preventDefault();
     if(task !== ""){
       // @ts-ignore
-      dispatch(addTodo(task));
+      dispatch(addTodo(task)).then((data: any) => {
+          if(data.error){
+            showToast({
+              severity: "error",
+              message: "Failed to add Todo"
+            });
+          } else {
+            showToast({
+              severity: "success",
+              message: "Todo added successfully"
+            });
+          }
+        });
       setTask("");
     }
   }
