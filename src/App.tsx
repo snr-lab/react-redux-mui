@@ -6,6 +6,7 @@ import { CssBaseline, ThemeProvider } from '@material-ui/core';
 
 import { store } from './redux';
 
+import ContextProviders from './context-providers';
 import CustomTheme from "./theme/custom-theme";
 import Info from "./pages/Info";
 import Todo from "./pages/Todo";
@@ -15,13 +16,15 @@ function App() {
     <Provider store={store}>
       <CssBaseline />
       <ThemeProvider theme={CustomTheme}>
-        <Router>
-          <Switch>
-            <Route path="/info" exact component={Info} />
-            <Route path="/todo" component={Todo} />
-            <Redirect to="/todo"></Redirect>
-          </Switch>
-        </Router>
+        <ContextProviders>
+          <Router>
+            <Switch>
+              <Route path="/info" exact component={Info} />
+              <Route path="/todo" component={Todo} />
+              <Redirect to="/todo"></Redirect>
+            </Switch>
+          </Router>
+        </ContextProviders>
       </ThemeProvider>
     </Provider>
   );
