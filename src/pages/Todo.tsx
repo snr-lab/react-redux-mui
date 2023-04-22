@@ -1,5 +1,4 @@
 import React, { useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
 import { makeStyles } from '@material-ui/core/styles';
 import { Avatar, Box, CssBaseline, LinearProgress, List, ListItem, Paper, Typography } from '@material-ui/core';
 import { Alert } from '@material-ui/lab';
@@ -7,6 +6,7 @@ import { ListAlt } from '@material-ui/icons';
 import TaskForm from '../components/TaskForm';
 import TaskItem from '../components/TaskItem';
 import { getTodos } from '../redux/todosSlice';
+import { useAppDispatch, useAppSelector } from '../redux';
 
 const useStyles = makeStyles((theme) => ({
     paper: {
@@ -49,10 +49,10 @@ export interface TodoProp {
 
 const Todo: React.FC = () => {
   const classes = useStyles();
-  const dispatch = useDispatch();
-  const loading = useSelector((state: any) => state.Todos.loading);
-  const errorMsg = useSelector((state: any) => state.Todos.errorMsg);
-  const todoList = useSelector((state: any) => state.Todos.todoList);
+  const dispatch = useAppDispatch();
+  const loading = useAppSelector((state: any) => state.todos.loading);
+  const errorMsg = useAppSelector((state: any) => state.todos.errorMsg);
+  const todoList = useAppSelector((state: any) => state.todos.todoList);
   useEffect(() => {
     dispatch(getTodos());
   }, [dispatch]);

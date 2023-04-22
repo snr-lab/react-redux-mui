@@ -1,8 +1,26 @@
-import { createSlice, createAsyncThunk, isAnyOf } from '@reduxjs/toolkit';
+import { createSlice, createAsyncThunk, isAnyOf, PayloadAction } from '@reduxjs/toolkit';
 import { getTodos as getTodosApi } from './../lib/api-calls';
 import { addTodo as addTodoApi } from './../lib/api-calls';
 import { deleteTodo as deleteTodoApi } from './../lib/api-calls';
 import { updateTodo as updateTodoApi } from './../lib/api-calls';
+
+type TodoType = {
+    id: number,
+    task: string,
+    done: boolean
+}
+
+type TodosStateType = {
+    todoList: TodoType[],
+    loading: Boolean,
+    errorMsg: string
+}
+
+const initialState: TodosStateType = {
+    todoList: [],
+    loading: false,
+    errorMsg: ""
+}
 
 export const getTodos = createAsyncThunk(
     'todos/getTodos',
@@ -11,13 +29,13 @@ export const getTodos = createAsyncThunk(
         return response;
     }
 );
-export const addTodo = createAsyncThunk(
+export const addTodo = createAsyncThunk<TodoType, string, { state: { todos: TodosStateType } }>(
     'todos/addTodo',
     async (todoTask, thunkApi) => {
-        const todoList = thunkApi.getState().Todos.todoList;
+        const todoList = thunkApi.getState().todos.todoList;
         let newId = 0;
         if(todoList.length > 0){
-            const latestItem = todoList.reduce((latestItem, currentItem) => {
+            const latestItem = todoList.reduce((latestItem: TodoType, currentItem: TodoType) => {
                 if(latestItem.id > currentItem.id){
                     return latestItem;
                 }
@@ -46,14 +64,10 @@ export const updateTodo = createAsyncThunk(
 
 const todosSlice = createSlice({
     name: 'todos',
-    initialState: {
-        todoList: [],
-        loading: false,
-        errorMsg: ""
-    },
+    initialState,
     reducers: {
         testAction: {
-            reducer(state, action){
+            reducer(state, action: PayloadAction<TodoType>){
 
             },
             prepare(payload){
@@ -62,9 +76,9 @@ const todosSlice = createSlice({
         }
     },
     extraReducers: (builder) => {
-        builder.addCase(getTodos.fulfilled, (state, action) => {
+        builder.addCase(getTodos.fulfilled, (state, action: PayloadAction<TodoType[]>) => {
             state.todoList = action.payload;
-        }).addCase(addTodo.fulfilled, (state, action) => {
+        }).addCase(addTodo.fulfilled, (state, action: PayloadAction<TodoType>) => {
             state.todoList.push(action.payload);
         }).addCase(deleteTodo.fulfilled, (state, action) => {
             state.todoList = state.todoList.filter((todo)=>{
@@ -73,7 +87,7 @@ const todosSlice = createSlice({
                 }
                 return true;
             });
-        }).addCase(updateTodo.fulfilled, (state, action) => {
+        }).addCase(updateTodo.fulfilled, (state, action: PayloadAction<TodoType>) => {
             state.todoList = state.todoList.map((todo)=>{
                 if(todo.id === action.payload.id){
                     return action.payload;
