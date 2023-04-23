@@ -25,40 +25,25 @@ const initialState: TodosStateType = {
 export const getTodos = createAsyncThunk(
     'todos/getTodos',
     async () => {
-        const response = await getTodosApi();
-        return response;
+        return await getTodosApi();
     }
 );
 export const addTodo = createAsyncThunk<TodoType, string, { state: { todos: TodosStateType } }>(
     'todos/addTodo',
     async (todoTask, thunkApi) => {
-        const todoList = thunkApi.getState().todos.todoList;
-        let newId = 0;
-        if(todoList.length > 0){
-            const latestItem = todoList.reduce((latestItem: TodoType, currentItem: TodoType) => {
-                if(latestItem.id > currentItem.id){
-                    return latestItem;
-                }
-                return currentItem;
-            });
-            newId = latestItem.id + 1;
-        }
-        const response = await addTodoApi({id: newId, task: todoTask, done: false});
-        return response;
+        return await addTodoApi({task: todoTask, done: false});
     }
 );
 export const deleteTodo = createAsyncThunk(
     'todos/deleteTodo',
     async (todoId) => {
-        const response = await deleteTodoApi(todoId);
-        return response;
+        return await deleteTodoApi(todoId);
     }
 );
 export const updateTodo = createAsyncThunk(
     'todos/updateTodo',
     async (todo) => {
-        const response = await updateTodoApi(todo);
-        return response;
+        return await updateTodoApi(todo);
     }
 );
 
