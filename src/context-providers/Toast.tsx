@@ -46,9 +46,15 @@ function Alert(props: AlertProps) {
     return <MuiAlert elevation={6} variant="filled" {...props} />;
 } 
 
-const ToastContext = createContext<[(data: ToastProps) => void]>([() => {}]);
+const ToastContext = createContext<{
+    showToast: (data: ToastProps) => void,
+    showApiToast: (data: any, successMessage: string, errorMessage: string) => void
+}>({
+    showToast: () => {},
+    showApiToast: () => {}
+});
 
-export const useAppToast = () => React.useContext(ToastContext);
+export const useToast = () => React.useContext(ToastContext);
 
 type AppToastProps = {
     children: ReactNode;
@@ -67,6 +73,21 @@ const AppToast: React.FC<AppToastProps> = (props) => {
             }
         });
     }
+
+    const showApiToast = (response: any, successMessage: string, errorMessage: string) => {
+        if(response.error){
+            showToast({
+                severity: "error",
+                message: errorMessage
+            });
+        } else {
+            showToast({
+                severity: "success",
+                message: successMessage
+            });
+        }
+    }
+
     const handleClose = (event?: React.SyntheticEvent, reason?: string) => {
         if (reason === 'clickaway') {
           return;
@@ -75,7 +96,7 @@ const AppToast: React.FC<AppToastProps> = (props) => {
     };
     return (
         <Fragment>
-            <ToastContext.Provider value={[showToast]} >
+            <ToastContext.Provider value={{ showToast, showApiToast}} >
                 {children}
                 <Snackbar open={state.open} autoHideDuration={3000} onClose={handleClose}>
                     <Alert onClose={handleClose} severity={state.severity}>

@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
-import { useDispatch } from 'react-redux';
 import { makeStyles } from '@material-ui/core/styles';
 import { IconButton, InputBase, Paper} from '@material-ui/core';
 import { Add } from '@material-ui/icons';
-import { addTodo } from '../redux/todosSlice';
-import { useAppToast } from '../context-providers/Toast';
+import { useToast } from '../context-providers/Toast';
+import { useAddTodoMutation } from '../redux/todoApiSlice';
+import { TodoProp } from '../pages/Todo';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -24,27 +24,18 @@ const useStyles = makeStyles((theme) => ({
 
 const TaskForm: React.FC = () => {
   const classes = useStyles();
-  const [showToast] = useAppToast();
-  const dispatch = useDispatch();
+  const {showApiToast} = useToast();
   const [task, setTask] = useState("");
-  const addNewTodo = (event: React.ChangeEvent<{}>) => {
+  const [ addTodo, { isLoading: isAdding } ] =  useAddTodoMutation();
+  const addNewTodo = async (event: React.ChangeEvent<{}>) => {
     event.preventDefault();
     if(task !== ""){
-      // @ts-ignore
-      dispatch(addTodo(task)).then((data: any) => {
-          if(data.error){
-            showToast({
-              severity: "error",
-              message: "Failed to add Todo"
-            });
-          } else {
-            showToast({
-              severity: "success",
-              message: "Todo added successfully"
-            });
-          }
-        });
-      setTask("");
+      addTodo({ task, done: false } as TodoProp).then((response: any) => {
+        showApiToast(response, "Todo added successfully", "Failed to add Todo");
+        if(!response.error){
+          setTask("");
+        }
+      });
     }
   }
   return (
@@ -55,8 +46,9 @@ const TaskForm: React.FC = () => {
           value = {task}
           onChange = {e => setTask(e.target.value)}
           inputProps={{ 'aria-label': 'Add todo' }}
+          disabled={ isAdding }
         />
-        <IconButton type="submit" color="primary" className={classes.iconButton} aria-label="directions">
+        <IconButton type="submit" color="primary" className={classes.iconButton} aria-label="directions" disabled={ isAdding }>
           <Add />
         </IconButton>
       </Paper>

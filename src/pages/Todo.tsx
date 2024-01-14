@@ -1,12 +1,14 @@
 import React, { useEffect } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
-import { Avatar, Box, CssBaseline, LinearProgress, List, ListItem, Paper, Typography } from '@material-ui/core';
+import { Avatar, Box, CircularProgress, CssBaseline, LinearProgress, List, ListItem, Paper } from '@material-ui/core';
 import { Alert } from '@material-ui/lab';
 import { ListAlt } from '@material-ui/icons';
 import TaskForm from '../components/TaskForm';
 import TaskItem from '../components/TaskItem';
-import { getTodos } from '../redux/todosSlice';
-import { useAppDispatch, useAppSelector } from '../redux';
+import { useGetTodosQuery } from '../redux/todoApiSlice';
+import TaskTitle from '../components/TaskTitle';
+import { useAppDispatch } from '../redux';
+import { setTodoCount } from '../redux/todosSlice';
 
 const useStyles = makeStyles((theme) => ({
     paper: {
@@ -38,6 +40,10 @@ const useStyles = makeStyles((theme) => ({
     },
     listItem: {
       padding: 0
+    },
+    loadingList: {
+      display: "flex",
+      justifyContent: "center"
     }
 }));
 
@@ -49,29 +55,30 @@ export interface TodoProp {
 
 const Todo: React.FC = () => {
   const classes = useStyles();
+  const { data: todoList, isFetching, isLoading, isError } = useGetTodosQuery();
   const dispatch = useAppDispatch();
-  const loading = useAppSelector((state: any) => state.todos.loading);
-  const errorMsg = useAppSelector((state: any) => state.todos.errorMsg);
-  const todoList = useAppSelector((state: any) => state.todos.todoList);
+
   useEffect(() => {
-    dispatch(getTodos());
-  }, [dispatch]);
+    dispatch(setTodoCount(todoList?.length || 0));
+  }, [dispatch, todoList]);
+
   return (
     <Box component="main">
       <CssBaseline />
-      <Box className={classes.progressBar}>{loading && <LinearProgress />}</Box>
+      <Box className={classes.progressBar}>{isFetching && <LinearProgress />}</Box>
       <Box className={classes.paper} maxWidth="xs">
         <Avatar className={classes.avatar}>
           <ListAlt />
         </Avatar>
-        <Typography component="h1" variant="h5">
-          Todo List
-        </Typography>
-        {errorMsg && <Alert severity="error" className={classes.errorMsg}>{errorMsg}</Alert>}
+        <TaskTitle />
+        {isError && <Alert severity="error" className={classes.errorMsg}>Unable to fetch Todos</Alert>}
         <TaskForm />
         <Paper className={classes.listRoot}>
           <List className={classes.list}>
-            {todoList.map((todo: TodoProp) => {
+            {isLoading && <ListItem className={classes.loadingList}>
+              <CircularProgress />
+            </ListItem>}
+            {todoList?.map((todo: TodoProp) => {
               return (
                 <ListItem className={classes.listItem} key={todo.id} role={undefined}>
                   <TaskItem task={todo.task} id={todo.id} done={todo.done} />
