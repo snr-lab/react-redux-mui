@@ -3,7 +3,7 @@ import { TodoProp } from "../pages/Todo";
 
 export const todoApi = createApi({
     reducerPath: "todoApi",
-    baseQuery: fetchBaseQuery({ baseUrl: "http://localhost:3001" }),
+    baseQuery: fetchBaseQuery({ baseUrl: process.env.REACT_APP_BASE_API }),
     tagTypes: ["Todos"],
     endpoints: (builder) => ({
         getTodos: builder.query<TodoProp[], void>({
