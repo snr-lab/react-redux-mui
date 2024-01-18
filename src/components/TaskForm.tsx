@@ -4,7 +4,7 @@ import { IconButton, InputBase, Paper} from '@material-ui/core';
 import { Add } from '@material-ui/icons';
 import { useToast } from '../context-providers/Toast';
 import { useAddTodoMutation } from '../redux/todoApiSlice';
-import { TodoProp } from '../pages/Todo';
+import { v4 as uuid } from 'uuid';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -30,7 +30,7 @@ const TaskForm: React.FC = () => {
   const addNewTodo = async (event: React.ChangeEvent<{}>) => {
     event.preventDefault();
     if(task !== ""){
-      addTodo({ task, done: false } as TodoProp).then((response: any) => {
+      addTodo({ id: uuid(), task, done: false }).then((response: any) => {
         showApiToast(response, "Todo added successfully", "Failed to add Todo");
         if(!response.error){
           setTask("");

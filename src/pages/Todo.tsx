@@ -48,7 +48,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export interface TodoProp {
-  id: number
+  id: string
   task: string
   done: boolean
 }
